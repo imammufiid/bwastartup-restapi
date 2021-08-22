@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bwastartup/user"
 	"fmt"
 	"log"
 
@@ -11,11 +12,29 @@ import (
 func main() {
 	// connection to database
 	dsn := "root:@tcp(127.0.0.1:3306)/learn_bwastartup?charset=utf8mb4&parseTime=True&loc=Local"
-	_, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
 	fmt.Println("Connection to database is GOOD!!!")
+
+	var users []user.User
+
+	// get data users from db
+	db.Find(&users)
+	
+	// show user
+	for i, user := range users {
+		fmt.Println("ID : ",  user.ID)
+		fmt.Println("Name : ",  user.Name)
+		fmt.Println("Email : ",  user.Email)
+		fmt.Println("Role : ",  user.Role)
+		
+		if i != len(users)-1 {
+			fmt.Println()
+		}
+	}
+
 }
