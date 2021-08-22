@@ -39,6 +39,14 @@ func main() {
 	// 	}
 	// }
 
+	// routers
+	router := gin.Default()
+	// define route
+	router.GET("/users", handler)
+
+	// run router
+	router.Run()
+
 }
 
 func handler(c *gin.Context)  {
