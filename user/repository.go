@@ -11,3 +11,7 @@ import "gorm.io/gorm"
 type Repository interface {
 	Save(user User) (User, error)
 }
+
+type repository struct {
+	db *gorm.DB
+}
