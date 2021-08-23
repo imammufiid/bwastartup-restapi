@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bwastartup/handler"
 	"bwastartup/user"
 	"log"
 
@@ -19,11 +20,10 @@ func main() {
 
 	// init user repository
 	userRepo := user.InstanceRepository(db)
+	// init service
+	userService := user.InstanceService(userRepo)
+	// init handler
+	userHandler := handler.InstanceUserHandler(userService)
 
-	// mock user
-	user := user.User{Name: "Imam Mufiid"}
-
-	// insert to db
-	userRepo.Save(user)
 
 }
