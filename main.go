@@ -2,7 +2,6 @@ package main
 
 import (
 	"bwastartup/user"
-	_ "fmt"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -19,7 +18,7 @@ func main() {
 	}
 
 	// init user repository
-	userRepo := user.Instance(db)
+	userRepo := user.InstanceRepository(db)
 
 	// mock user
 	user := user.User{Name: "Imam Mufiid"}
