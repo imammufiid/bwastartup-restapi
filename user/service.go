@@ -6,6 +6,8 @@
 
 package user
 
+import "golang.org/x/crypto/bcrypt"
+
 type Service interface {
 	RegisterUser(input RegisterInput) (User, error)
 }
@@ -20,5 +22,7 @@ func InstanceService(repository Repository) *service  {
 
 // implemented interface Service
 func (s *service) RegisterUser(input RegisterInput) (User, error) {
-	
+	// hasing password
+	passHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
+
 }
