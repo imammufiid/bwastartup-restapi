@@ -34,6 +34,7 @@ func (s *service) RegisterUser(input RegisterInput) (User, error) {
 	user.Name = input.Name
 	user.Email = input.Email
 	user.Occupation = input.Occupation
+	user.Role = "user"
 	user.PasswordHash = string(passHash)
 
 	// 2. pass to repository
