@@ -21,4 +21,10 @@ func main() {
 	// init user repository
 	userRepo := user.Instance(db)
 
+	// mock user
+	user := user.User{Name: "Imam Mufiid"}
+
+	// insert to db
+	userRepo.Save(user)
+
 }
