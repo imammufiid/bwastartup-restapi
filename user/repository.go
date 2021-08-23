@@ -16,6 +16,10 @@ type repository struct {
 	db *gorm.DB
 }
 
+func Instance(db *gorm.DB) *repository {
+	return &repository{db: db}
+}
+
 func (r *repository) Save(user User) (User, error) {
 	err := r.db.Create(&user).Error // save to db with return error
 
