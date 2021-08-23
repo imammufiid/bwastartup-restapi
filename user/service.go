@@ -35,4 +35,11 @@ func (s *service) RegisterUser(input RegisterInput) (User, error) {
 	user.Email = input.Email
 	user.Occupation = input.Occupation
 	user.PasswordHash = string(passHash)
+
+	// 2. pass to repository
+	newUser, err := s.repository.Save(user)
+	if err != nil {
+		return newUser, err
+	}
+	return newUser, nil
 }
