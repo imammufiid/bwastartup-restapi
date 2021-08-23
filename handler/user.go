@@ -11,3 +11,7 @@ import "bwastartup/user"
 type userHandler struct {
 	userService user.Service
 }
+
+func InstanceUserHandler(userService user.Service) *userHandler {
+	return &userHandler{userService: userService}
+}
