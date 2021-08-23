@@ -22,7 +22,12 @@ func InstanceService(repository Repository) *service  {
 
 // implemented interface Service
 func (s *service) RegisterUser(input RegisterInput) (User, error) {
+	var user User = User{}
+	
 	// hasing password
 	passHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.MinCost)
 
+	if err != nil {
+		return user, err
+	}
 }
