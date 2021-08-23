@@ -7,6 +7,6 @@ import "time"
 
 type User struct {
 	ID                                                          int
-	Name, Occupation, Email, PasswordHash, AvatarFileName, Role string
+	Name, Occupation, Email, PasswordHash, Avatar, Role string
 	CreatedAt, UpdatedAt                                        time.Time
 }
