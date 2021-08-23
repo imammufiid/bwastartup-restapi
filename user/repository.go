@@ -15,3 +15,13 @@ type Repository interface {
 type repository struct {
 	db *gorm.DB
 }
+
+func (r *repository) Save(user User) (User, error) {
+	err := r.db.Create(&user).Error // save to db with return error
+
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+
+}
