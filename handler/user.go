@@ -29,4 +29,13 @@ func (h *userHandler) RegisterUser(c *gin.Context)  {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, nil)
 	}
+
+	// 2. map to Register input
+	// 3. pass to service
+	user, err := h.userService.RegisterUser(input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, nil)
+	}
+
+	c.JSON(http.StatusCreated, user)
 }
