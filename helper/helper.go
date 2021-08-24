@@ -1,7 +1,5 @@
 package helper
 
-import "golang.org/x/text/message"
-
 // 1. create object response 
 type Response struct {
 	Meta Meta
@@ -14,3 +12,18 @@ type Meta struct {
 	Status  string
 }
 
+// 2. Mapping value of response from handler
+func ApiResponse(message string, code int, status string, data interface{}) Response {
+	meta := Meta {
+		Message: message,
+		Code: code,
+		Status: status,
+	}
+
+	jsonResponse := Response {
+		Meta: meta,
+		Data: data,
+	}
+
+	return jsonResponse
+}
