@@ -60,6 +60,7 @@ func (s *service) Login(input LoginInput) (User, error) {
 		return user, err
 	}
 
+	// checked if user not found
 	if user.ID == 0 {
 		return user, errors.New("User not found on that email!")
 	}
