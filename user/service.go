@@ -10,7 +10,7 @@ import "golang.org/x/crypto/bcrypt"
 
 type Service interface {
 	RegisterUser(input RegisterInput) (User, error)
-	Loginuser(input LoginInput) (User, error)
+	Login(input LoginInput) (User, error)
 }
 
 type service struct {
@@ -46,6 +46,15 @@ func (s *service) RegisterUser(input RegisterInput) (User, error) {
 	return newUser, nil
 }
 
-func (s *service) Loginuser(input LoginInput) (User, error) {
-	
+func (s *service) Login(input LoginInput) (User, error) {
+	email := input.Email
+	password := input.Password
+
+	// checking email
+	user, err := s.repository.FindByEmail(email)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
