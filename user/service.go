@@ -62,7 +62,13 @@ func (s *service) Login(input LoginInput) (User, error) {
 
 	// checked if user not found
 	if user.ID == 0 {
-		return user, errors.New("User not found on that email!")
+		return user, errors.New("User not found on that email")
+	}
+
+	// compare password
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
+	if err != nil {
+		return user, err
 	}
 
 	return user, nil
