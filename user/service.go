@@ -6,7 +6,11 @@
 
 package user
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"errors"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 type Service interface {
 	RegisterUser(input RegisterInput) (User, error)
@@ -54,6 +58,10 @@ func (s *service) Login(input LoginInput) (User, error) {
 	user, err := s.repository.FindByEmail(email)
 	if err != nil {
 		return user, err
+	}
+
+	if user.ID == 0 {
+		return user, errors.New("User not found on that email!")
 	}
 
 	return user, nil
