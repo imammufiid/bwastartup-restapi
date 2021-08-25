@@ -35,11 +35,11 @@ func (h *userHandler) RegisterUser(c *gin.Context)  {
 		// create error handling response
 		response := helper.ApiResponse(
 			"Register account failed",
-			http.StatusBadRequest,
+			http.StatusUnprocessableEntity,
 			"error",
 			errorMessage,
 		)
-		c.JSON(http.StatusBadRequest, response)
+		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
 
@@ -50,11 +50,11 @@ func (h *userHandler) RegisterUser(c *gin.Context)  {
 		// create error handling response
 		response := helper.ApiResponse(
 			"Register account failed",
-			http.StatusBadRequest,
+			http.StatusUnprocessableEntity,
 			"error",
 			nil,
 		)
-		c.JSON(http.StatusBadRequest, response)
+		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
 
