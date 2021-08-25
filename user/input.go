@@ -13,3 +13,7 @@ type RegisterInput struct {
 	Email      string
 	Password   string
 }
+
+type LoginInput struct {
+	Email, Password string
+}
