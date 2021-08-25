@@ -28,14 +28,30 @@ func (h *userHandler) RegisterUser(c *gin.Context)  {
 	// bind to JSON
 	err := c.ShouldBindJSON(&input)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, nil)
+		// create error handling response
+		response := helper.ApiResponse(
+			"Register account failed",
+			http.StatusBadRequest,
+			"error",
+			nil,
+		)
+		c.JSON(http.StatusBadRequest, response)
+		return
 	}
 
 	// 2. map to Register input
 	// 3. pass to service
 	newUser, err := h.userService.RegisterUser(input)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, nil)
+		// create error handling response
+		response := helper.ApiResponse(
+			"Register account failed",
+			http.StatusBadRequest,
+			"error",
+			nil,
+		)
+		c.JSON(http.StatusBadRequest, response)
+		return
 	}
 
 	// change format reponse user
