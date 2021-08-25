@@ -33,17 +33,20 @@ func (h *userHandler) RegisterUser(c *gin.Context)  {
 
 	// 2. map to Register input
 	// 3. pass to service
-	user, err := h.userService.RegisterUser(input)
+	newUser, err := h.userService.RegisterUser(input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, nil)
 	}
 
+	// change format reponse user
+	formatUser := user.FormatUser(newUser, "token123")
+	
 	// create response
 	response := helper.ApiResponse(
 		"Account has been registered",
 		http.StatusOK,
 		"success",
-		user,
+		formatUser,
 	)
 
 	c.JSON(http.StatusCreated, response)
