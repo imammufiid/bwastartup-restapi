@@ -9,6 +9,7 @@ package handler
 import (
 	"bwastartup/helper"
 	"bwastartup/user"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -164,6 +165,67 @@ func (h *userHandler) CheckEmailIsAvailable(c *gin.Context) {
 
 	response := helper.ApiResponse(
 		metaMessage,
+		http.StatusOK,
+		"success",
+		data,
+	)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *userHandler) UploadAvatar(c *gin.Context) {
+	// get file input user
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		// create error handling response
+		response := helper.ApiResponse(
+			"Failed to upload avatar image",
+			http.StatusUnprocessableEntity,
+			"error",
+			data,
+		)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	userID := 1
+
+	// asign path file save
+	path := fmt.Sprintf("images/%d-%s_%s", userID, file.Filename, helper.TimeNowMilli())
+
+	// save file to path
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		// create error handling response
+		response := helper.ApiResponse(
+			"Failed to save avatar image into path",
+			http.StatusUnprocessableEntity,
+			"error",
+			data,
+		)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	_, err = h.userService.SaveAvatar(userID, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		// create error handling response
+		response := helper.ApiResponse(
+			"Failed to save avatar image into database",
+			http.StatusUnprocessableEntity,
+			"error",
+			data,
+		)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	data := gin.H{"is_uploaded": true}
+	// create error handling response
+	response := helper.ApiResponse(
+		"Avatar successfuly uploaded",
 		http.StatusOK,
 		"success",
 		data,
