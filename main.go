@@ -33,6 +33,7 @@ func main() {
 	// route
 	apiV1.POST("/users", userHandler.RegisterUser)
 	apiV1.POST("/sessions", userHandler.Login)
+	apiV1.POST("/email_checker", userHandler.CheckEmailIsAvailable)
 	// running router
 	router.Run()
 
