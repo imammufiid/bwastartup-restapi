@@ -1,6 +1,9 @@
 package helper
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/go-playground/validator/v10"
 )
 
@@ -41,4 +44,9 @@ func FormatValidationError(err error) []string {
 	}
 
 	return errors
+}
+
+func TimeNowMilli() string {
+	timeMilli := time.Now().UnixNano() / int64(time.Millisecond)
+	return strconv.Itoa(int(timeMilli))
 }
