@@ -1,9 +1,10 @@
 package main
 
 import (
-	"bwastartup/handler"
-	"bwastartup/user"
 	"bwastartup/auth"
+	"bwastartup/handler"
+	"bwastartup/middleware"
+	"bwastartup/user"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -36,7 +37,7 @@ func main() {
 	apiV1.POST("/users", userHandler.RegisterUser)
 	apiV1.POST("/sessions", userHandler.Login)
 	apiV1.POST("/email_checker", userHandler.CheckEmailIsAvailable)
-	apiV1.POST("/avatars", userHandler.UploadAvatar)
+	apiV1.POST("/avatars", middleware.AuthMiddleware(authService, userService), userHandler.UploadAvatar)
 	// running router
 	router.Run()
 
