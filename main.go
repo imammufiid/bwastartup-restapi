@@ -3,6 +3,7 @@ package main
 import (
 	"bwastartup/handler"
 	"bwastartup/user"
+	"bwastartup/auth"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,7 @@ func main() {
 	userRepo := user.InstanceRepository(db)
 	// init service
 	userService := user.InstanceService(userRepo)
+	authService := auth.InstanceService()
 	// init handler
 	userHandler := handler.InstanceUserHandler(userService)
 
