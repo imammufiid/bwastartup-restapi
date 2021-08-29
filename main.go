@@ -26,7 +26,7 @@ func main() {
 	userService := user.InstanceService(userRepo)
 	authService := auth.InstanceService()
 	// init handler
-	userHandler := handler.InstanceUserHandler(userService)
+	userHandler := handler.InstanceUserHandler(userService, authService)
 
 	// router
 	router := gin.Default()
