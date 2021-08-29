@@ -4,6 +4,7 @@ import "github.com/dgrijalva/jwt-go"
 
 type Service interface {
 	GenerateToken(userID int) (string, error)
+	ValidateToken(encodedToken string) (*jwt.Token, error)
 }
 
 type jwtService struct {
@@ -30,4 +31,8 @@ func (s *jwtService) GenerateToken(userID int) (string, error) {
 	}
 
 	return signedToken, nil
+}
+
+func (s *jwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
+	
 }
