@@ -9,6 +9,7 @@ package handler
 import (
 	"bwastartup/helper"
 	"bwastartup/user"
+	"bwastartup/auth"
 	"fmt"
 	"net/http"
 
@@ -17,10 +18,11 @@ import (
 
 type userHandler struct {
 	userService user.Service
+	jwtService auth.Service
 }
 
-func InstanceUserHandler(userService user.Service) *userHandler {
-	return &userHandler{userService: userService}
+func InstanceUserHandler(userService user.Service, jwtService auth.Service) *userHandler {
+	return &userHandler{userService: userService, jwtService: jwtService}
 }
 
 func (h *userHandler) RegisterUser(c *gin.Context)  {
@@ -59,8 +61,24 @@ func (h *userHandler) RegisterUser(c *gin.Context)  {
 		return
 	}
 
+	// generate token
+	token, err := h.jwtService.GenerateToken(newUser.ID)
+	if err != nil {
+		// map to response
+		errorMessage := gin.H{"errors": err.Error()}
+		// create error handling response
+		response := helper.ApiResponse(
+			"Failed Generate token",
+			http.StatusUnprocessableEntity,
+			"error",
+			errorMessage,
+		)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+	
 	// change format reponse user
-	formatUser := user.FormatUser(newUser, "token123")
+	formatUser := user.FormatUser(newUser, token)
 	
 	// create response
 	response := helper.ApiResponse(
@@ -108,8 +126,24 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
+	// generate token
+	token, err := h.jwtService.GenerateToken(loggedIn.ID)
+	if err != nil {
+		// map to response
+		errorMessage := gin.H{"errors": err.Error()}
+		// create error handling response
+		response := helper.ApiResponse(
+			"Failed Generate token",
+			http.StatusUnprocessableEntity,
+			"error",
+			errorMessage,
+		)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
 	// mapping to format user response
-	responseUser := user.FormatUser(loggedIn, "token123")
+	responseUser := user.FormatUser(loggedIn, token)
 	response := helper.ApiResponse(
 		"Successfuly loggedin",
 		http.StatusOK,
