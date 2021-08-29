@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"bwastartup/auth"
+	"bwastartup/user"
 	"bwastartup/helper"
 	"net/http"
 	"strings"
@@ -8,22 +10,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func authMiddleware(c *gin.Context) {
-	authHeader := c.GetHeader("Authorization")
-
-	// check if authorization contains "Bearer" text
-	if !strings.Contains(authHeader, "Bearer") {
-		response := helper.ApiResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
-		c.AbortWithStatusJSON(http.StatusUnauthorized, response)
-		return
-	}
-
-	// split Bearer token
-	token := splitBearerToken(authHeader)
-	if len(strings.Trim(token, " ")) <= 0 {
-		response := helper.ApiResponse("Invalid Token Parsing", http.StatusUnauthorized, "error", nil)
-		c.AbortWithStatusJSON(http.StatusUnauthorized, response)
-		return
+func AuthMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
+	return func (c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+	
+		// check if authorization contains "Bearer" text
+		if !strings.Contains(authHeader, "Bearer") {
+			response := helper.ApiResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+	
+		// split Bearer token
+		token := splitBearerToken(authHeader)
+		if len(strings.Trim(token, " ")) <= 0 {
+			response := helper.ApiResponse("Invalid Token Parsing", http.StatusUnauthorized, "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
 	}
 }
 
