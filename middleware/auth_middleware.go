@@ -11,7 +11,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
+type AuthMiddleware interface {
+	AuthMiddleware() gin.HandlerFunc
+}
+
+type authMiddleware struct {
+	userService user.Service
+	authService auth.Service
+}
+
+func InstanceAuthMiddleware(userService user.Service, authService auth.Service) *authMiddleware {
+	return &authMiddleware{
+		userService: userService,
+		authService: authService,
+	}
+}
+
+func (m *authMiddleware) AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 
@@ -31,7 +47,7 @@ func AuthMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		}
 
 		// validate token
-		token, err := authService.ValidateToken(tokenSplit)
+		token, err := m.authService.ValidateToken(tokenSplit)
 		if err != nil {
 			response := helper.ApiResponse("Unauthorized, token is invalid", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
@@ -50,7 +66,7 @@ func AuthMiddleware(authService auth.Service, userService user.Service) gin.Hand
 		userID := int(claim["user_id"].(float64))
 
 		// get user by userID
-		user, err := userService.GetUserByID(userID)
+		user, err := m.userService.GetUserByID(userID)
 		if err != nil {
 			response := helper.ApiResponse("Unauthorized, something error when get user by ID", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
