@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,6 +29,36 @@ func AuthMiddleware(authService auth.Service, userService user.Service) gin.Hand
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
+
+		// validate token
+		token, err := authService.ValidateToken(tokenSplit)
+		if err != nil {
+			response := helper.ApiResponse("Unauthorized, token is invalid", http.StatusUnauthorized, "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		// claim token
+		claim, ok := token.Claims.(jwt.MapClaims)
+		if !ok || !token.Valid {
+			response := helper.ApiResponse("Unauthorized, token is invalid", http.StatusUnauthorized, "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		// get user_id from claim
+		userID := int(claim["user_id"].(float64))
+
+		// get user by userID
+		user, err := userService.GetUserByID(userID)
+		if err != nil {
+			response := helper.ApiResponse("Unauthorized, something error when get user by ID", http.StatusUnauthorized, "error", nil)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
+			return
+		}
+
+		// save user data to context
+		c.Set("currentUser", user) 
 	}
 }
 
