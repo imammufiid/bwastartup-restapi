@@ -6,6 +6,7 @@ import (
 	"bwastartup/middleware"
 	"bwastartup/router"
 	"bwastartup/user"
+	"bwastartup/campaign"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -23,6 +24,8 @@ func main() {
 
 	// init user repository
 	userRepo := user.InstanceRepository(db)
+	_ = campaign.InstanceRepository(db)
+	
 	// init service
 	userService := user.InstanceService(userRepo)
 	authService := auth.InstanceService()
