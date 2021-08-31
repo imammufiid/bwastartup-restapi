@@ -33,11 +33,11 @@ func main() {
 
 	// init handler
 	userHandler := handler.InstanceUserHandler(userService, authService)
-	_ = handler.InstanceCampaignHandler(campaignService)
+	campaignHandler := handler.InstanceCampaignHandler(campaignService)
 	authMiddleware := middleware.InstanceAuthMiddleware(userService, authService)
 
 	// router
-	router := router.InstanceRouter(userHandler, authMiddleware)
+	router := router.InstanceRouter(userHandler, campaignHandler, authMiddleware)
 	router.Router()
 
 }
