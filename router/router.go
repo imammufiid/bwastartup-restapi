@@ -12,14 +12,20 @@ type Router interface {
 }
 
 type router struct {
-	userHandler    handler.UserHandler
-	authMiddleware middleware.AuthMiddleware
+	userHandler     handler.UserHandler
+	campaignHandler handler.CampaignHandler
+	authMiddleware  middleware.AuthMiddleware
 }
 
-func InstanceRouter(userHandler handler.UserHandler, authMiddleware middleware.AuthMiddleware) *router {
+func InstanceRouter(
+	userHandler handler.UserHandler,
+	campaignHandler handler.CampaignHandler,
+	authMiddleware middleware.AuthMiddleware,
+) *router {
 	return &router{
-		userHandler:    userHandler,
-		authMiddleware: authMiddleware,
+		userHandler:     userHandler,
+		campaignHandler: campaignHandler,
+		authMiddleware:  authMiddleware,
 	}
 }
 
