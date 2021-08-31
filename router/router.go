@@ -29,7 +29,7 @@ func InstanceRouter(
 	}
 }
 
-func (r *router) Router() {
+func (r *router) Router( ) {
 	// router
 	router := gin.Default()
 	// api versioning
@@ -39,6 +39,7 @@ func (r *router) Router() {
 	apiV1.POST("/sessions", r.userHandler.Login)
 	apiV1.POST("/email_checker", r.userHandler.CheckEmailIsAvailable)
 	apiV1.POST("/avatars", r.authMiddleware.AuthMiddleware(), r.userHandler.UploadAvatar)
+	apiV1.GET("/campaigns", r.campaignHandler.GetCampaigns)
 	// running router
 	router.Run()
 }
