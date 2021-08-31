@@ -24,11 +24,12 @@ func main() {
 
 	// init user repository
 	userRepo := user.InstanceRepository(db)
-	_ = campaign.InstanceRepository(db)
-	
+	campaignRepo := campaign.InstanceRepository(db)
+
 	// init service
 	userService := user.InstanceService(userRepo)
 	authService := auth.InstanceService()
+	_ = campaign.InstanceService(campaignRepo)
 
 	// init handler
 	userHandler := handler.InstanceUserHandler(userService, authService)
