@@ -4,10 +4,10 @@ import (
 	"bwastartup/auth"
 	"bwastartup/handler"
 	"bwastartup/middleware"
+	"bwastartup/router"
 	"bwastartup/user"
 	"log"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -26,19 +26,13 @@ func main() {
 	// init service
 	userService := user.InstanceService(userRepo)
 	authService := auth.InstanceService()
+
 	// init handler
 	userHandler := handler.InstanceUserHandler(userService, authService)
+	authMiddleware := middleware.InstanceAuthMiddleware(userService, authService)
 
 	// router
-	router := gin.Default()
-	// api versioning
-	apiV1 := router.Group("/api/v1")
-	// route
-	apiV1.POST("/users", userHandler.RegisterUser)
-	apiV1.POST("/sessions", userHandler.Login)
-	apiV1.POST("/email_checker", userHandler.CheckEmailIsAvailable)
-	apiV1.POST("/avatars", middleware.AuthMiddleware(authService, userService), userHandler.UploadAvatar)
-	// running router
-	router.Run()
+	router := router.InstanceRouter(userHandler, authMiddleware)
+	router.Router()
 
 }
