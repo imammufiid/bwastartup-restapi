@@ -29,10 +29,11 @@ func main() {
 	// init service
 	userService := user.InstanceService(userRepo)
 	authService := auth.InstanceService()
-	_ = campaign.InstanceService(campaignRepo)
+	campaignService := campaign.InstanceService(campaignRepo)
 
 	// init handler
 	userHandler := handler.InstanceUserHandler(userService, authService)
+	_ = handler.InstanceCampaignHandler(campaignService)
 	authMiddleware := middleware.InstanceAuthMiddleware(userService, authService)
 
 	// router
