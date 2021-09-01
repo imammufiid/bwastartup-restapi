@@ -29,7 +29,7 @@ func InstanceRouter(
 	}
 }
 
-func (r *router) Router( ) {
+func (r *router) Router() {
 	// router
 	router := gin.Default()
 	// setting static route for file
@@ -43,6 +43,7 @@ func (r *router) Router( ) {
 	apiV1.POST("/avatars", r.authMiddleware.AuthMiddleware(), r.userHandler.UploadAvatar)
 	// campaign
 	apiV1.GET("/campaigns", r.campaignHandler.GetCampaigns)
+	apiV1.GET("/campaign/:id", r.campaignHandler.GetCampaign)
 	// running router
 	router.Run()
 }
