@@ -72,7 +72,7 @@ func (h *campaignHandler) GetCampaign(c *gin.Context) {
 		return
 	}
 
-	campaign, err := h.campaignService.GetCampaign(input)
+	campaignDetail, err := h.campaignService.GetCampaign(input)
 	if err != nil {
 		// map to response
 		errorMessage := gin.H{"errors": err.Error()}
@@ -86,12 +86,13 @@ func (h *campaignHandler) GetCampaign(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
+
 	message := fmt.Sprintf("Campaign detail with by ID %d", input.ID)
 	response := helper.ApiResponse(
 		message,
 		http.StatusOK,
 		"success",
-		campaign,
+		campaign.FormatDetailCampaign(campaignDetail),
 	)
 	c.JSON(http.StatusOK, response)
 }
