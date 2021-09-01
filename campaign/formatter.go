@@ -96,25 +96,25 @@ func FormatDetailCampaign(campaign Campaign) FormatterDetailCampaign {
 	campaignDetailFormatter.User.Name = campaign.User.Name
 	campaignDetailFormatter.User.Avatar = campaign.User.Avatar
 
-	// images := []FormatterCampaignImage{}
-	// for _, image := range campaign.CampaignImages {
-	// 	imageFormatter := FormatCampaignImage(image)
-	// 	images = append(images, imageFormatter) 
-	// }
-	// campaignDetailFormatter.Images = images
+	images := []FormatterCampaignImage{}
+	for _, image := range campaign.CampaignImages {
+		imageFormatter := FormatCampaignImage(image)
+		images = append(images, imageFormatter) 
+	}
+	campaignDetailFormatter.Images = images
 
 	return campaignDetailFormatter
 }
 
 
-// func FormatCampaignImage(campaign CampaignImage) FormatterCampaignImage{
-// 	formatCampaignImage := FormatterCampaignImage{}
+func FormatCampaignImage(campaign CampaignImage) FormatterCampaignImage{
+	formatCampaignImage := FormatterCampaignImage{}
 
-// 	formatCampaignImage.ImageUrl = campaign.FileName
-// 	formatCampaignImage.IsPrimary = false 
-// 	if campaign.IsPrimary == 1 {
-// 		formatCampaignImage.IsPrimary = true
-// 	}
+	formatCampaignImage.ImageUrl = campaign.FileName
+	formatCampaignImage.IsPrimary = false 
+	if campaign.IsPrimary == 1 {
+		formatCampaignImage.IsPrimary = true
+	}
 
-// 	return formatCampaignImage
-// }
+	return formatCampaignImage
+}
