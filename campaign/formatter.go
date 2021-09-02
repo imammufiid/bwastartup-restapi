@@ -16,23 +16,23 @@ type FormatterCampaign struct {
 }
 
 type FormatterDetailCampaign struct {
-	ID               int                       `json:"id"`
-	UserID           int                       `json:"user_id"`
-	Name             string                    `json:"name"`
-	ShortDescription string                    `json:"short_description"`
-	Description      string                    `json:"description"`
-	ImageUrl         string                    `json:"image_url"`
-	GoalAmount       int                       `json:"goal_amount"`
-	CurrentAmount    int                       `json:"current_amount"`
-	Slug             string                    `json:"slug"`
-	Perks            []string                  `json:"perks"`
-	User             FormatterUser             `json:"user"`
+	ID               int                      `json:"id"`
+	UserID           int                      `json:"user_id"`
+	Name             string                   `json:"name"`
+	ShortDescription string                   `json:"short_description"`
+	Description      string                   `json:"description"`
+	ImageUrl         string                   `json:"image_url"`
+	GoalAmount       int                      `json:"goal_amount"`
+	CurrentAmount    int                      `json:"current_amount"`
+	Slug             string                   `json:"slug"`
+	Perks            []string                 `json:"perks"`
+	User             FormatterUser            `json:"user"`
 	Images           []FormatterCampaignImage `json:"images"`
 }
 
 type FormatterUser struct {
-	Name   string `json:"name"`
-	Avatar string `json:"avatar_url"`
+	Name     string `json:"name"`
+	ImageUrl string `json:"image_url"`
 }
 
 type FormatterCampaignImage struct {
@@ -93,25 +93,27 @@ func FormatDetailCampaign(campaign Campaign) FormatterDetailCampaign {
 	}
 	campaignDetailFormatter.Perks = perks
 
-	campaignDetailFormatter.User.Name = campaign.User.Name
-	campaignDetailFormatter.User.Avatar = campaign.User.Avatar
+	userFormatter := FormatterUser{
+		Name:     campaign.User.Name,
+		ImageUrl: campaign.User.Avatar,
+	}
+	campaignDetailFormatter.User = userFormatter
 
 	images := []FormatterCampaignImage{}
 	for _, image := range campaign.CampaignImages {
 		imageFormatter := FormatCampaignImage(image)
-		images = append(images, imageFormatter) 
+		images = append(images, imageFormatter)
 	}
 	campaignDetailFormatter.Images = images
 
 	return campaignDetailFormatter
 }
 
-
-func FormatCampaignImage(campaign CampaignImage) FormatterCampaignImage{
+func FormatCampaignImage(campaign CampaignImage) FormatterCampaignImage {
 	formatCampaignImage := FormatterCampaignImage{}
 
 	formatCampaignImage.ImageUrl = campaign.FileName
-	formatCampaignImage.IsPrimary = false 
+	formatCampaignImage.IsPrimary = false
 	if campaign.IsPrimary == 1 {
 		formatCampaignImage.IsPrimary = true
 	}
