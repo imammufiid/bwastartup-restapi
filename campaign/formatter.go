@@ -113,10 +113,11 @@ func FormatCampaignImage(campaign CampaignImage) FormatterCampaignImage {
 	formatCampaignImage := FormatterCampaignImage{}
 
 	formatCampaignImage.ImageUrl = campaign.FileName
-	formatCampaignImage.IsPrimary = false
+	isPrimary := false
 	if campaign.IsPrimary == 1 {
-		formatCampaignImage.IsPrimary = true
+		isPrimary = true
 	}
+	formatCampaignImage.IsPrimary = isPrimary
 
 	return formatCampaignImage
 }
