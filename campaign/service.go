@@ -11,6 +11,7 @@ type Service interface {
 	GetCampaigns(userID int) ([]Campaign, error)
 	GetCampaign(input GetCampaignDetailInput) (Campaign, error)
 	CreateCampaign(input CreateCampaignInput) (Campaign, error)
+	UpdateCampaign(inputID GetCampaignDetailInput, inputData CreateCampaignInput) (Campaign, error)
 }
 
 type service struct {
@@ -50,22 +51,44 @@ func (s *service) GetCampaign(input GetCampaignDetailInput) (Campaign, error) {
 func (s *service) CreateCampaign(input CreateCampaignInput) (Campaign, error) {
 	// mapping input to entity
 	campaign := Campaign{
-		Name: input.Name,
+		Name:             input.Name,
 		ShortDescription: input.ShortDescription,
-		Description: input.Description,
-		GoalAmount: input.GoalAmount,
-		Perks: input.Perks,
-		UserID: input.User.ID,
+		Description:      input.Description,
+		GoalAmount:       input.GoalAmount,
+		Perks:            input.Perks,
+		UserID:           input.User.ID,
 	}
 
 	// create slug
 	customSlug := fmt.Sprintf("%s %d", input.Name, input.User.ID)
 	campaign.Slug = slug.Make(customSlug)
-	
+
 	// call repo
 	resCampaign, err := s.repository.Save(campaign)
 	if err != nil {
 		return resCampaign, err
 	}
 	return resCampaign, nil
+}
+
+func (s *service) UpdateCampaign(inputID GetCampaignDetailInput, inputData CreateCampaignInput) (Campaign, error) {
+	// get campaign by ID
+	campaign, err := s.repository.FindByID(inputID.ID)
+	if err != nil {
+		return campaign, err
+	}
+
+	// mapping from input to campaign
+	campaign.Name = inputData.Name
+	campaign.ShortDescription = inputData.ShortDescription
+	campaign.Description = inputData.Description
+	campaign.Perks = inputData.Perks
+	campaign.GoalAmount = inputData.GoalAmount
+
+	// update campaign with call repo
+	newCampaign, err := s.repository.Update(campaign)
+	if err != nil {
+		return newCampaign, err
+	}
+	return newCampaign, nil
 }
