@@ -160,6 +160,10 @@ func (h *campaignHandler) UpdateCampaign(c *gin.Context) {
 		return
 	}
 
+	// get current user by jwt
+	currentUser := c.MustGet("currentUser").(user.User)
+	inputData.User = currentUser
+
 	updatedCampaign, err := h.campaignService.UpdateCampaign(inputID, inputData)
 	if err != nil {
 		errorMessage := gin.H{"errors": err.Error()}
