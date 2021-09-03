@@ -15,6 +15,7 @@ type CampaignHandler interface {
 	GetCampaigns(c *gin.Context)
 	GetCampaign(c *gin.Context)
 	CreateCampaign(c *gin.Context)
+	UpdateCampaign(c *gin.Context)
 }
 
 type campaignHandler struct {
@@ -127,6 +128,51 @@ func (h *campaignHandler) CreateCampaign(c *gin.Context) {
 		http.StatusOK,
 		"success",
 		campaign.FormatCampaign(newCampaign),
+	)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *campaignHandler) UpdateCampaign(c *gin.Context) {
+	// get input ID from URI
+	var inputID campaign.GetCampaignDetailInput
+	err := c.ShouldBindUri(&inputID)
+	if err != nil {
+		// map to response
+		errorMessage := gin.H{"errors": err.Error()}
+		// create error handling response
+		response := helper.ApiResponse(
+			"Failed to bind URI",
+			http.StatusBadRequest,
+			"error",
+			errorMessage,
+		)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// get data from body json
+	var inputData campaign.CreateCampaignInput
+	err = c.ShouldBindJSON(&inputData)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := helper.ApiResponse("Failed to update campaign", http.StatusUnprocessableEntity, "error", errors)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	updatedCampaign, err := h.campaignService.UpdateCampaign(inputID, inputData)
+	if err != nil {
+		errorMessage := gin.H{"errors": err.Error()}
+		response := helper.ApiResponse("Failed to update campaign", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	response := helper.ApiResponse(
+		"Success updated campaign",
+		http.StatusOK,
+		"success",
+		campaign.FormatCampaign(updatedCampaign),
 	)
 	c.JSON(http.StatusOK, response)
 }
