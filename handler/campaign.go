@@ -13,6 +13,7 @@ import (
 type CampaignHandler interface {
 	GetCampaigns(c *gin.Context)
 	GetCampaign(c *gin.Context)
+	CreateCampaign(c *gin.Context)
 }
 
 type campaignHandler struct {
@@ -95,4 +96,8 @@ func (h *campaignHandler) GetCampaign(c *gin.Context) {
 		campaign.FormatDetailCampaign(campaignDetail),
 	)
 	c.JSON(http.StatusOK, response)
+}
+
+func (h *campaignHandler) CreateCampaign(c *gin.Context) {
+
 }
