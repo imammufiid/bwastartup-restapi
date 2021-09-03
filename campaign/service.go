@@ -5,6 +5,7 @@ import "errors"
 type Service interface {
 	GetCampaigns(userID int) ([]Campaign, error)
 	GetCampaign(input GetCampaignDetailInput) (Campaign, error)
+	CreateCampaign(input CreateCampaignInput) (Campaign, error)
 }
 
 type service struct {
@@ -39,4 +40,25 @@ func (s *service) GetCampaign(input GetCampaignDetailInput) (Campaign, error) {
 		return campaign, errors.New("no user found on with that ID")
 	}
 	return campaign, nil
+}
+
+func (s *service) CreateCampaign(input CreateCampaignInput) (Campaign, error) {
+	// mapping input to entity
+	campaign := Campaign{
+		Name: input.Name,
+		ShortDescription: input.ShortDescription,
+		Description: input.Description,
+		GoalAmount: input.GoalAmount,
+		Perks: input.Perks,
+		UserID: input.User.ID,
+	}
+
+	// create slug
+
+	// call repo
+	resCampaign, err := s.repository.Save(campaign)
+	if err != nil {
+		return resCampaign, err
+	}
+	return resCampaign, nil
 }
