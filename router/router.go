@@ -43,7 +43,8 @@ func (r *router) Router() {
 	apiV1.POST("/avatars", r.authMiddleware.AuthMiddleware(), r.userHandler.UploadAvatar)
 	// campaign
 	apiV1.GET("/campaigns", r.campaignHandler.GetCampaigns)
-	apiV1.GET("/campaign/:id", r.campaignHandler.GetCampaign)
+	apiV1.GET("/campaigns/:id", r.campaignHandler.GetCampaign)
+	apiV1.POST("/campaigns", r.authMiddleware.AuthMiddleware(), r.campaignHandler.CreateCampaign)
 	// running router
 	router.Run()
 }
