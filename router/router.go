@@ -45,6 +45,7 @@ func (r *router) Router() {
 	apiV1.GET("/campaigns", r.campaignHandler.GetCampaigns)
 	apiV1.GET("/campaigns/:id", r.campaignHandler.GetCampaign)
 	apiV1.POST("/campaigns", r.authMiddleware.AuthMiddleware(), r.campaignHandler.CreateCampaign)
+	apiV1.PUT("/campaigns/:id", r.authMiddleware.AuthMiddleware(), r.campaignHandler.UpdateCampaign)
 	// running router
 	router.Run()
 }
