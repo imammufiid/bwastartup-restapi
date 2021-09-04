@@ -46,6 +46,7 @@ func (r *router) Router() {
 	apiV1.GET("/campaigns/:id", r.campaignHandler.GetCampaign)
 	apiV1.POST("/campaigns", r.authMiddleware.AuthMiddleware(), r.campaignHandler.CreateCampaign)
 	apiV1.PUT("/campaigns/:id", r.authMiddleware.AuthMiddleware(), r.campaignHandler.UpdateCampaign)
+	apiV1.POST("/campaign-images", r.authMiddleware.AuthMiddleware(), r.campaignHandler.UploadImage)
 	// running router
 	router.Run()
 }

@@ -16,6 +16,7 @@ type CampaignHandler interface {
 	GetCampaign(c *gin.Context)
 	CreateCampaign(c *gin.Context)
 	UpdateCampaign(c *gin.Context)
+	UploadImage(c *gin.Context)
 }
 
 type campaignHandler struct {
@@ -177,6 +178,69 @@ func (h *campaignHandler) UpdateCampaign(c *gin.Context) {
 		http.StatusOK,
 		"success",
 		campaign.FormatCampaign(updatedCampaign),
+	)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *campaignHandler) UploadImage(c *gin.Context) {
+	var input campaign.CreateCampaignImage
+
+	// get input from form data
+	err := c.ShouldBind(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": errors}
+
+		response := helper.ApiResponse("Failed to upload campaign image", http.StatusBadRequest, "error", errorMessage)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+	input.User = currentUser
+
+	// get form data file
+	file, err := c.FormFile("file")
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.ApiResponse("Failed to upload campaign image", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	// set path
+	path := fmt.Sprintf("assets/images/campaign/%d-%s_%s", currentUser.ID, file.Filename, helper.TimeNowMilli())
+
+	// save file in path
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		response := helper.ApiResponse("Failed to save upload campaign image into path", http.StatusBadRequest, "error", data)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	_, err = h.campaignService.SaveCampaignImage(input, path)
+	if err != nil {
+		data := gin.H{"is_uploaded": false}
+		// create error handling response
+		response := helper.ApiResponse(
+			"Failed to upload campaign image into database",
+			http.StatusUnprocessableEntity,
+			"error",
+			data,
+		)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	data := gin.H{"is_uploaded": true}
+	// create error handling response
+	response := helper.ApiResponse(
+		"Campaign image successfuly uploaded",
+		http.StatusOK,
+		"success",
+		data,
 	)
 	c.JSON(http.StatusOK, response)
 }
