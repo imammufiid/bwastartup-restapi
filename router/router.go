@@ -1,7 +1,7 @@
 package router
 
 import (
-	"bwastartup/handler"
+	h "bwastartup/handler"
 	"bwastartup/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -12,20 +12,23 @@ type Router interface {
 }
 
 type router struct {
-	userHandler     handler.UserHandler
-	campaignHandler handler.CampaignHandler
 	authMiddleware  middleware.AuthMiddleware
+	userHandler     h.UserHandler
+	campaignHandler h.CampaignHandler
+	trsHandler      h.TransactionHandler
 }
 
 func InstanceRouter(
-	userHandler handler.UserHandler,
-	campaignHandler handler.CampaignHandler,
 	authMiddleware middleware.AuthMiddleware,
+	userHandler h.UserHandler,
+	campaignHandler h.CampaignHandler,
+	trsHandler h.TransactionHandler,
 ) *router {
 	return &router{
 		userHandler:     userHandler,
 		campaignHandler: campaignHandler,
 		authMiddleware:  authMiddleware,
+		trsHandler:      trsHandler,
 	}
 }
 
@@ -47,6 +50,8 @@ func (r *router) Router() {
 	apiV1.POST("/campaigns", r.authMiddleware.AuthMiddleware(), r.campaignHandler.CreateCampaign)
 	apiV1.PUT("/campaigns/:id", r.authMiddleware.AuthMiddleware(), r.campaignHandler.UpdateCampaign)
 	apiV1.POST("/campaign-images", r.authMiddleware.AuthMiddleware(), r.campaignHandler.UploadImage)
+	// transaction
+	apiV1.GET("/campaigns/:id/transactions", r.authMiddleware.AuthMiddleware(), r.trsHandler.GetCampaignTransactions)
 	// running router
 	router.Run()
 }
