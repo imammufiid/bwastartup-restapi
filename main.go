@@ -32,7 +32,7 @@ func main() {
 	userService := user.InstanceService(userRepo)
 	authService := auth.InstanceService()
 	campaignService := campaign.InstanceService(campaignRepo)
-	trsService := transaction.InstanceService(trsRepo)
+	trsService := transaction.InstanceService(trsRepo, campaignRepo)
 
 	// init handler
 	authMiddleware := middleware.InstanceAuthMiddleware(userService, authService)
