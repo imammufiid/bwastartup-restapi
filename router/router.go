@@ -53,6 +53,7 @@ func (r *router) Router() {
 	// transaction
 	apiV1.GET("/campaigns/:id/transactions", r.authMiddleware.AuthMiddleware(), r.trsHandler.GetCampaignTransactions)
 	apiV1.GET("/transactions", r.authMiddleware.AuthMiddleware(), r.trsHandler.GetUserTransactions)
+	apiV1.POST("/transactions", r.authMiddleware.AuthMiddleware(), r.trsHandler.CreateTransaction)
 	// running router
 	router.Run()
 }

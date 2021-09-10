@@ -12,6 +12,7 @@ import (
 type TransactionHandler interface {
 	GetCampaignTransactions(c *gin.Context)
 	GetUserTransactions(c *gin.Context)
+	CreateTransaction(c *gin.Context)
 }
 
 type transactionHandler struct {
@@ -58,5 +59,29 @@ func (h *transactionHandler) GetUserTransactions(c *gin.Context) {
 		return
 	}
 	response := helper.ApiResponse("User's transaction", http.StatusOK, "success", transaction.FormatUserTransactions(transactions))
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *transactionHandler) CreateTransaction(c *gin.Context) {
+	var input transaction.CreateTransactionInput
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := helper.ApiResponse("Failed to bind input", http.StatusUnprocessableEntity, "error", errors)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+	input.User = currentUser
+
+	transaction, err := h.service.CreateTransaction(input)
+	if err != nil {
+		errorMessage := gin.H{"errors": err.Error()}
+		response := helper.ApiResponse("Failed to get create transactions", http.StatusBadRequest, "error", errorMessage)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+	response := helper.ApiResponse("Success to create transaction", http.StatusOK, "success", transaction)
 	c.JSON(http.StatusOK, response)
 }
