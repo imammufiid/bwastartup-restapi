@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -49,4 +50,9 @@ func FormatValidationError(err error) []string {
 func TimeNowMilli() string {
 	timeMilli := time.Now().UnixNano() / int64(time.Millisecond)
 	return strconv.Itoa(int(timeMilli))
+}
+
+func GenerateCodeTransaction(userID int) string {
+	code := fmt.Sprintf("TRX-%s-%s", strconv.Itoa(userID), TimeNowMilli())
+	return code
 }
