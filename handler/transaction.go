@@ -75,13 +75,13 @@ func (h *transactionHandler) CreateTransaction(c *gin.Context) {
 	currentUser := c.MustGet("currentUser").(user.User)
 	input.User = currentUser
 
-	transaction, err := h.service.CreateTransaction(input)
+	newTransaction, err := h.service.CreateTransaction(input)
 	if err != nil {
 		errorMessage := gin.H{"errors": err.Error()}
 		response := helper.ApiResponse("Failed to get create transactions", http.StatusBadRequest, "error", errorMessage)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	response := helper.ApiResponse("Success to create transaction", http.StatusOK, "success", transaction)
+	response := helper.ApiResponse("Success to create transaction", http.StatusOK, "success", transaction.FormatTransaction(newTransaction))
 	c.JSON(http.StatusOK, response)
 }

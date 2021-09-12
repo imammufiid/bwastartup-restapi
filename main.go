@@ -2,12 +2,15 @@ package main
 
 import (
 	"bwastartup/auth"
-	"bwastartup/handler"
-	"bwastartup/middleware"
-	"bwastartup/router"
-	"bwastartup/user"
 	"bwastartup/campaign"
+	"bwastartup/handler"
+	"bwastartup/helper"
+	"bwastartup/middleware"
+	"bwastartup/payment"
+	"bwastartup/router"
 	"bwastartup/transaction"
+	"bwastartup/user"
+	"fmt"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -16,7 +19,10 @@ import (
 
 func main() {
 	// connection to database
-	dsn := "root:@tcp(127.0.0.1:3306)/learn_bwastartup?charset=utf8mb4&parseTime=True&loc=Local"
+	dbName := helper.GetENV("DB_NAME", "golang-db-name")
+	dbUsername := helper.GetENV("DB_USERNAME", "root")
+
+	dsn := fmt.Sprintf("%s:@tcp(127.0.0.1:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", dbUsername, dbName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -32,7 +38,8 @@ func main() {
 	userService := user.InstanceService(userRepo)
 	authService := auth.InstanceService()
 	campaignService := campaign.InstanceService(campaignRepo)
-	trsService := transaction.InstanceService(trsRepo, campaignRepo)
+	paymentService := payment.InstanceService()
+	trsService := transaction.InstanceService(trsRepo, campaignRepo, paymentService)
 
 	// init handler
 	authMiddleware := middleware.InstanceAuthMiddleware(userService, authService)
