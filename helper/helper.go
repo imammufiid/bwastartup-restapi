@@ -2,10 +2,13 @@ package helper
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"strconv"
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/joho/godotenv"
 )
 
 // 1. create object response
@@ -55,4 +58,16 @@ func TimeNowMilli() string {
 func GenerateCodeTransaction(userID int) string {
 	code := fmt.Sprintf("TRX-%s-%s", strconv.Itoa(userID), TimeNowMilli())
 	return code
+}
+
+func GetENV(key, fallback string) string {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }
