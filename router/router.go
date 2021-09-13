@@ -4,6 +4,7 @@ import (
 	h "bwastartup/handler"
 	"bwastartup/middleware"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,6 +36,8 @@ func InstanceRouter(
 func (r *router) Router() {
 	// router
 	router := gin.Default()
+	// set cours
+	router.Use(cors.Default())
 	// setting static route for file
 	router.Static("/image/avatar", "./assets/images/avatar")
 	// api versioning
