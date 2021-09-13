@@ -34,7 +34,7 @@ func (s *service) GetPaymentURL(transaction Transaction, user user.User) (string
 			FName: user.Name,
 		},
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID: strconv.Itoa(transaction.ID),
+			OrderID:  strconv.Itoa(transaction.ID),
 			GrossAmt: int64(transaction.Amount),
 		},
 	}
@@ -43,6 +43,6 @@ func (s *service) GetPaymentURL(transaction Transaction, user user.User) (string
 	if err != nil {
 		return "", err
 	}
-	
+
 	return snapTokenResp.RedirectURL, nil
 }
