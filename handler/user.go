@@ -21,6 +21,7 @@ type UserHandler interface {
 	Login(c *gin.Context)
 	CheckEmailIsAvailable(c *gin.Context)
 	UploadAvatar(c *gin.Context)
+	UserTest(c *gin.Context)
 }
 
 type userHandler struct {
@@ -271,6 +272,16 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 		http.StatusOK,
 		"success",
 		data,
+	)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *userHandler) UserTest(c *gin.Context) {
+	response := helper.ApiResponse(
+		"Testing",
+		http.StatusOK,
+		"error",
+		nil,
 	)
 	c.JSON(http.StatusOK, response)
 }
